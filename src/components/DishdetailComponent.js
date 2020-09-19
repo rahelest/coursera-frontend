@@ -14,6 +14,40 @@ class DishDetail extends Component {
         );
     }
 
+    renderComments(comments) {
+        if (comments == null) {
+            return <div />;
+        }
+
+        return (
+            <div>
+                <h4>Comments</h4>
+                <ul className="list-unstyled">
+                    {comments.map(({ comment, author, date }) => {
+                        const options = {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                        };
+                        const formattedDate = new Intl.DateTimeFormat(
+                            'en-US',
+                            options
+                        ).format(new Date(date));
+
+                        return (
+                            <li className="mt-4">
+                                <div>{comment}</div>
+                                <div className="mt-2">
+                                    --{author}, {formattedDate}
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        );
+    }
+
     render() {
         if (this.props.dish == null) {
             return <div />;
@@ -25,7 +59,7 @@ class DishDetail extends Component {
                     {this.renderDish(this.props.dish)}
                 </div>
                 <div className="col-12 col-md-5 m-1">
-                    {/* Comments */}
+                    {this.renderComments(this.props.dish.comments)}
                 </div>
             </div>
         );
