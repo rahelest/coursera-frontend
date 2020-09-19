@@ -25,14 +25,14 @@ class DishDetail extends Component {
                 <ul className="list-unstyled">
                     {comments.map(({ comment, author, date }) => {
                         const options = {
-                            month: 'long',
-                            day: 'numeric',
                             year: 'numeric',
+                            month: 'short',
+                            day: '2-digit',
                         };
                         const formattedDate = new Intl.DateTimeFormat(
                             'en-US',
                             options
-                        ).format(new Date(date));
+                        ).format(new Date(Date.parse(date)));
 
                         return (
                             <li className="mt-4">
