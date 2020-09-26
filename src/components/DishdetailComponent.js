@@ -1,7 +1,45 @@
-import React from 'react';
-import { Card, CardImg, CardText, CardBody,
-    CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import React, { Component } from 'react';
+import { Breadcrumb, BreadcrumbItem, Button, Card,
+    CardBody, CardImg, CardText, CardTitle, Modal,
+    ModalBody, ModalHeader } from 'reactstrap';
 import { Link } from 'react-router-dom';
+
+class CommentForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isModalOpen: false,
+        };
+
+        this.toggleModal = this.toggleModal.bind(this);
+    }
+
+    toggleModal() {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen,
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <Button outline onClick={this.toggleModal}>
+                    <span className="fa fa-pencil fa-lg"></span> Submit Comment
+                </Button>
+                <Modal
+                    isOpen={this.state.isModalOpen}
+                    toggle={this.toggleModal}
+                >
+                    <ModalHeader toggle={this.toggleModal}>
+                        Submit Comment
+                    </ModalHeader>
+                    <ModalBody>Form for comments</ModalBody>
+                </Modal>
+            </div>
+        );
+    }
+}
 
 function RenderDish({ dish }) {
     return (
@@ -45,6 +83,7 @@ function RenderComments({ comments }) {
                     );
                 })}
             </ul>
+            <CommentForm />
         </div>
     );
 }
@@ -58,8 +97,9 @@ const DishDetail = (props) => {
         <div className="container">
             <div className="row">
                 <Breadcrumb>
-
-                    <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <Link to="/menu">Menu</Link>
+                    </BreadcrumbItem>
                     <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
                 </Breadcrumb>
                 <div className="col-12">
