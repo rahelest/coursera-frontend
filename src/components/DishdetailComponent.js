@@ -20,7 +20,6 @@ class CommentForm extends Component {
             comment: '',
             touched: {
                 name: false,
-                comment: false,
             },
         };
 
