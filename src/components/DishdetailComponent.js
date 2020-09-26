@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Button, Card,
-    CardBody, CardImg, CardText, CardTitle, Modal,
-    ModalBody, ModalHeader } from 'reactstrap';
+    CardBody, CardImg, CardText, CardTitle, Label,
+    Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Control, Errors, LocalForm } from 'react-redux-form';
+
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !val || val.length <= len;
+const minLength = (len) => (val) => val && val.length >= len;
 
 class CommentForm extends Component {
     constructor(props) {
@@ -10,9 +15,20 @@ class CommentForm extends Component {
 
         this.state = {
             isModalOpen: false,
+            rating: '1',
+            name: '',
+            comment: '',
+            touched: {
+                name: false,
+                comment: false,
+            },
         };
 
         this.toggleModal = this.toggleModal.bind(this);
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
     }
 
     toggleModal() {
@@ -21,20 +37,90 @@ class CommentForm extends Component {
         });
     }
 
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value,
+        });
+    }
+
+    handleSubmit(values) {
+        console.log('Current State is: ' + JSON.stringify(values));
+        alert('Current State is: ' + JSON.stringify(values));
+        // event.preventDefault();
+    }
+
+    handleBlur = (field) => (evt) => {
+        this.setState({
+            touched: { ...this.state.touched, [field]: true },
+        });
+    };
+
     render() {
         return (
             <div>
                 <Button outline onClick={this.toggleModal}>
                     <span className="fa fa-pencil fa-lg"></span> Submit Comment
                 </Button>
-                <Modal
-                    isOpen={this.state.isModalOpen}
-                    toggle={this.toggleModal}
-                >
-                    <ModalHeader toggle={this.toggleModal}>
-                        Submit Comment
-                    </ModalHeader>
-                    <ModalBody>Form for comments</ModalBody>
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
+                    <ModalBody>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                            <div className="form-group">
+                                <Label htmlFor="rating">Rating</Label>
+                                <Control.select model=".rating" name="rating" className="form-control">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </Control.select>
+                            </div>
+                            <div className="form-group">
+                                <Label htmlFor="name">Your Name</Label>
+                                <Control.text
+                                    model=".name"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Your Name"
+                                    className="form-control"
+                                    validators={{
+                                        required,
+                                        minLength: minLength(3),
+                                        maxLength: maxLength(15),
+                                    }}
+                                />
+                                <Errors
+                                    className="text-danger"
+                                    model=".name"
+                                    show="touched"
+                                    messages={{
+                                        required: 'Required',
+                                        minLength: 'Must be greater than 2 characters',
+                                        maxLength: 'Must be 15 characters or less',
+                                    }}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <Label htmlFor="comment">Comment</Label>
+                                <Control.textarea
+                                    model=".comment"
+                                    id="comment"
+                                    name="comment"
+                                    rows="6"
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <Button type="submit" color="primary">
+                                    Submit
+                                </Button>
+                            </div>
+                        </LocalForm>
+                    </ModalBody>
                 </Modal>
             </div>
         );
@@ -68,10 +154,8 @@ function RenderComments({ comments }) {
                         month: 'short',
                         day: '2-digit',
                     };
-                    const formattedDate = new Intl.DateTimeFormat(
-                        'en-US',
-                        options
-                    ).format(new Date(Date.parse(date)));
+                    const formattedDate = new Intl.DateTimeFormat('en-US', options)
+                        .format(new Date(Date.parse(date)));
 
                     return (
                         <li className="mt-4">
