@@ -16,10 +16,10 @@ class CommentForm extends Component {
         this.state = {
             isModalOpen: false,
             rating: '1',
-            name: '',
+            author: '',
             comment: '',
             touched: {
-                name: false,
+                author: false,
             },
         };
 
@@ -79,11 +79,11 @@ class CommentForm extends Component {
                                 </Control.select>
                             </div>
                             <div className="form-group">
-                                <Label htmlFor="name">Your Name</Label>
+                                <Label htmlFor="author">Your Name</Label>
                                 <Control.text
-                                    model=".name"
-                                    id="name"
-                                    name="name"
+                                    model=".author"
+                                    id="author"
+                                    name="author"
                                     placeholder="Your Name"
                                     className="form-control"
                                     validators={{
@@ -94,7 +94,7 @@ class CommentForm extends Component {
                                 />
                                 <Errors
                                     className="text-danger"
-                                    model=".name"
+                                    model=".author"
                                     show="touched"
                                     messages={{
                                         required: 'Required',
